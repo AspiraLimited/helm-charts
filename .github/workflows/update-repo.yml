@@ -10,20 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
       - name: Install yq
         run: |
           version=3.3.2
           curl --fail -sSL "https://github.com/mikefarah/yq/releases/download/${version}/yq_linux_amd64" -o yq
           sudo install -m755 yq /usr/local/bin/yq
+          o
       - name: Merge helm index.yaml
         run: |
-          curl --fail -sSL ${{ github.event.client_payload.message.index_url }} -o index-new.yaml
+          curl --fail -sSL "${{ github.event.client_payload.index_url }}" -o index-new.yaml
           [[ ! -f index.yaml ]] || touch index.yaml
           yq m -ix index.yaml index-new.yaml
+          rm -v index-new.yaml
+
       - name: Commit and push
         run: |
           git add index.yaml
