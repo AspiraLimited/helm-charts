@@ -1,0 +1,33 @@
+---
+name: Update helm repository
+
+on:
+  repository_dispatch:
+    types: [update_helm_repo]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - name: Install yq
+        run: |
+          set -e
+          version=3.3.2
+          curl --fail -sSL "https://github.com/mikefarah/yq/releases/download/${version}/yq_linux_amd64" -o /usr/local/bin/yq
+          chmod +vx $_
+      - name: Merge helm index.yaml
+        run: |
+          set -e
+          curl --fail -sSL ${{ github.event.client_payload.message.index_url }} -o index-new.yaml
+          [[ ! -f index.yaml ]] || touch index.yaml
+          yq m -ix index.yaml index-new.yaml
+      - name: Commit and push
+        run: |
+          git add index.yaml
+          git commit -m "Update index.yaml"
+          git push origin HEAD
