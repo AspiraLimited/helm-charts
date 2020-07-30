@@ -25,8 +25,8 @@ jobs:
       - name: Merge helm index.yaml
         run: |
           curl --fail -sSL "${{ github.event.client_payload.index_url }}" -o index-new.yaml
-          [[ ! -f index.yaml ]] || touch index.yaml
-          yq m -ix index.yaml index-new.yaml
+          [[ -f index.yaml ]] || touch index.yaml
+          yq m -i -x index.yaml index-new.yaml
           rm -v index-new.yaml
 
       - name: Commit and push
