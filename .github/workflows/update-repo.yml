@@ -17,7 +17,8 @@ jobs:
       - name: Install yq
         run: |
           id
-          ls -la /usr/local/
+          env
+          pwd
           version=3.3.2
           curl --fail -sSL "https://github.com/mikefarah/yq/releases/download/${version}/yq_linux_amd64" -o /usr/local/bin/yq
           chmod +vx $_
