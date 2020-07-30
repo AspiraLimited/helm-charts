@@ -18,7 +18,7 @@ jobs:
         run: |
           version=3.3.2
           curl --fail -sSL "https://github.com/mikefarah/yq/releases/download/${version}/yq_linux_amd64" -o yq
-          sudo install -m755 jq /usr/local/bin/jq
+          sudo install -m755 yq /usr/local/bin/yq
       - name: Merge helm index.yaml
         run: |
           curl --fail -sSL ${{ github.event.client_payload.message.index_url }} -o index-new.yaml
